@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.send("CI/CD working! Updated version,how are u dinesh");
+  res.send("CI/CD working! how are u dinesh");
 });
 
 app.listen(3000, () => {
