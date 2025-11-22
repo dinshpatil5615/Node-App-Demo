@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/dinshpatil5615/Node-App-Demo.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'echo "No tests yet... skipping!"'
+            }
+        }
+
+        stage('Deploy to App Server') {
+            steps {
+                sh '''
+                scp -r * azureuser@74.178.88.165:/home/ubuntu/app
+                ssh azureuser@74.178.88.165 "cd /home/ubuntu/app && npm install && pm2 restart app || pm2 start app.js --name app"
+                '''
+            }
+        }
+    }
+}
