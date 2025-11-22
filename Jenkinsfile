@@ -24,8 +24,8 @@ pipeline {
         stage('Deploy to App Server') {
             steps {
                 sh '''
-                scp -r * azureuser@74.178.88.165:/home/ubuntu/app
-                ssh azureuser@74.178.88.165 "cd /home/ubuntu/app && npm install && pm2 restart app || pm2 start app.js --name app"
+                scp -r * azureuser@74.178.88.165:/home/azureuser/app
+                ssh azureuser@74.178.88.165 "cd /home/azureuser/app && npm install && pm2 restart app || pm2 start app.js --name app"
                 '''
             }
         }
