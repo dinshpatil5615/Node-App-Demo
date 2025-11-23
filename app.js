@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.send("CI/CD working fine! how are u dinesh");
+  res.send("CI/CD working fine! You are running this page using jenkins + Docker");
 });
 
 app.listen(3000, () => {
