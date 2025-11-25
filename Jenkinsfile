@@ -1,32 +1,54 @@
 pipeline {
     agent any
+
+    environment {
+        IMAGE = "dineshpatil0908/docker-ci-cd"
+        TARGET_USER = "azureuser"
+        TARGET_HOST = "20.123.41.70"
+    }
+
     stages {
 
-        stage('Clone Repo') {
+        stage("Checkout") {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/dinshpatil5615/Node-App-Demo.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage("Build Docker Image") {
             steps {
-                sh 'npm install'
+                sh """
+                    docker build -t ${IMAGE}:latest .
+                """
             }
         }
 
-        stage('Run Tests') {
+        stage("DockerHub Login") {
             steps {
-                sh 'echo "No tests yet... skipping!"'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PSW')]) {
+                    sh '''
+                        echo $DOCKERHUB_PSW | docker login -u $DOCKERHUB_USER --password-stdin
+                    '''
+                }
             }
         }
 
-        stage('Deploy to App Server') {
+        stage("Push Image") {
             steps {
-                sh '''
-                scp -r * azureuser@48.222.9.99:/home/azureuser/app
-                ssh azureuser@48.222.9.99 "cd /home/azureuser/app && npm install && pm2 restart app || pm2 start app.js --name app"
-                '''
+                sh "docker push ${IMAGE}:latest"
+            }
+        }
+
+        stage("Deploy to Target") {
+            steps {
+                sh """
+                    ssh -o StrictHostKeyChecking=no ${TARGET_USER}@${TARGET_HOST} '
+                        docker pull ${IMAGE}:latest;
+                        docker rm -f node-cicd-app || true;
+                        docker run -d --name node-cicd-app -p 3000:3000 ${IMAGE}:latest;
+                    '
+                """
             }
         }
     }
