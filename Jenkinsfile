@@ -19,7 +19,7 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 sh """
-                    sudo docker build -t ${IMAGE}:latest .
+                    docker build -t dineshpatil0908/ci-cd-docker:latest .
                 """
             }
         }
