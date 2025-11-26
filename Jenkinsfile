@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "dineshpatil0908/docker-ci-cd"
+        IMAGE = "dineshpatil0908/ci-cd-docker"
         TARGET_USER = "azureuser"
-        TARGET_HOST = "20.123.41.70"
+        TARGET_HOST = "134.149.97.100"
     }
 
     stages {
